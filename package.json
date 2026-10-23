@@ -1,0 +1,57 @@
+{
+  "name": "lawson-fuji-skin",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A Lawson-at-dusk Mount Fuji glass/material theme with nine finishes, edge and light effects, color/glass controls, quotes, weather, and a cinematic startup animation for DeepSeek Harness",
+  "license": "MIT",
+  "author": "kk0421",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kk0421/lawson-fuji-skin.git"
+  },
+  "homepage": "https://github.com/kk0421/lawson-fuji-skin",
+  "bugs": {
+    "url": "https://github.com/kk0421/lawson-fuji-skin/issues"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "theme",
+    "skin",
+    "glass",
+    "material",
+    "lawson",
+    "fuji"
+  ],
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "splash.js",
+    "cordis.patch.yml",
+    "bg.jpg",
+    "locale/*.json",
+    "icon.svg",
+    "README.md",
+    "LICENSE",
+    "ASSETS.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "validate": "node --check client.js && node --check index.js && node --check splash.js"
+  },
+  "dsh": {
+    "bundle": { "patch": "./cordis.patch.yml" },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": []
+    }
+  }
+}
