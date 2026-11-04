@@ -443,6 +443,41 @@ html[${THEME_ATTR}][data-windows-titlebar] body #root div:has(> [data-shell-over
 html[${THEME_ATTR}][data-windows-titlebar] body .pI_x6G_frame::before{
   background:transparent !important;
 }
+/* Windows native caption buttons: remove the opaque System caption fill and
+   place a compact glass capsule behind the native minimize/maximize/close
+   glyphs. The glyphs stay native and keep their system hit areas. */
+.lf-window-chrome{display:none;}
+html[${THEME_ATTR}][data-windows-titlebar] body{
+  --dsw-specific-sidebar-fill:transparent !important;
+}
+html[${THEME_ATTR}][data-windows-titlebar] .lf-window-chrome{
+  display:block;position:fixed;top:0;right:0;z-index:6000;
+  width:140px;height:var(--dsh-windows-titlebar-height,40px);pointer-events:none;
+  border-radius:0 0 11px 11px;
+  background:
+    linear-gradient(180deg,rgba(249,252,253,.44),rgba(249,252,253,.14) 72%,rgba(249,252,253,.05)),
+    radial-gradient(110% 170% at 100% 0,color-mix(in srgb,var(--lf-accent) 10%,transparent),transparent 62%),
+    var(--lf-material-pattern,none);
+  background-size:auto,auto,var(--lf-material-size,auto);
+  border-left:1px solid rgba(255,255,255,.28);
+  border-bottom:1px solid rgba(255,255,255,.20);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.48),0 8px 22px rgba(4,24,34,.07);
+  -webkit-backdrop-filter:blur(18px) saturate(126%);
+  backdrop-filter:blur(18px) saturate(126%);
+}
+html[${THEME_ATTR}][data-windows-titlebar] body[data-ds-dark-theme] .lf-window-chrome{
+  background:
+    linear-gradient(180deg,rgba(8,24,34,.58),rgba(8,24,34,.22) 72%,rgba(8,24,34,.08)),
+    radial-gradient(110% 170% at 100% 0,color-mix(in srgb,var(--lf-accent) 15%,transparent),transparent 62%),
+    var(--lf-material-pattern,none);
+  background-size:auto,auto,var(--lf-material-size,auto);
+  border-left-color:rgba(196,232,237,.16);
+  border-bottom-color:rgba(196,232,237,.14);
+  box-shadow:inset 0 1px 0 rgba(222,248,250,.12),0 8px 22px rgba(0,8,12,.28);
+}
+html[${THEME_ATTR}][data-windows-titlebar][data-fullscreen] .lf-window-chrome{
+  display:none !important;
+}
 /* This tab may still hold an older local skin until its next reload. */
 html[${THEME_ATTR}] :is(#ssb-theme-scene,#bws-theme-scene){display:none !important;}
 html[${THEME_ATTR}] :is(.ssb-replay,.bws-replay){display:none !important;}
@@ -1381,6 +1416,10 @@ body[data-ds-dark-theme] .lf-action.primary:hover{color:var(--lf-accent-dark-ink
       root.style.setProperty('--lf-vignette-strength', String(round(settings.vignette)))
       root.setAttribute('data-lf-material', settings.material)
       root.setAttribute('data-lf-edge', settings.edge)
+      if (document.body) {
+        // Wake the desktop preload's native-titlebar color probe.
+        document.body.style.setProperty('--lf-titlebar-sync', String(Date.now()))
+      }
       root.style.setProperty('--lf-depth', String(round(settings.depth)))
       var perspective = 1050
       root.style.setProperty('--lf-slice-back-scale',
@@ -2063,6 +2102,10 @@ body[data-ds-dark-theme] .lf-action.primary:hover{color:var(--lf-accent-dark-ink
       )
     }
 
+    function WindowChrome() {
+      return h('div', { className: 'lf-window-chrome', 'aria-hidden': 'true' })
+    }
+
     function Trigger() {
       var state = useStore()
       return h('button', {
@@ -2685,6 +2728,14 @@ body[data-ds-dark-theme] .lf-action.primary:hover{color:var(--lf-accent-dark-ink
             order: 5,
             label: '氛围设置',
           }, Trigger)
+        })
+
+        ctx.slots.inject('shell.overlay', function () {
+          return ctx.slots.register({
+            name: 'shell.overlay',
+            id: 'lf-window-chrome',
+            order: 1,
+          }, WindowChrome)
         })
 
         ctx.slots.inject('shell.overlay', function () {

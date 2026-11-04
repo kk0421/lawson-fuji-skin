@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.1] — 2026-11-04
+
+- Windows native minimize / maximize / close controls now sit on a theme-aware
+  glass capsule instead of the opaque system caption fill.
+- The native caption overlay stays transparent so the themed caption row remains
+  visible; close hover keeps the native red state.
+- Caption symbol ink follows the active light/dark theme.
+- Added `docs/window-controls.png` preview.
+
 ## [1.0.0] — 2026-10-23
 
 First public release.
